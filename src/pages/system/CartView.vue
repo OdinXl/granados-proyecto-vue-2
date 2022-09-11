@@ -99,7 +99,8 @@ export default {
         return {
             loading: false,
             modal: null,
-            direccion:{}
+            direccion:{},
+            envio_ok: false
         }
     },
     methods: {
@@ -157,7 +158,7 @@ export default {
         submitForm(){
             this.loading = true;
             let vm = this;
-
+            this.envio_ok = false;
             this.$axios.post('/finish_cart').then(function (response) {
                 if(response.data?.success){
                     let message = response.data.message;
@@ -166,6 +167,7 @@ export default {
                     });
                     vm.closeModal();
                     vm.direccion = {};
+                    vm.envio_ok = true;
                 }
             }).catch(function (error) {
                 if(error?.response?.data?.data){
@@ -178,6 +180,9 @@ export default {
                 let response = await vm.$store.dispatch('getDatos');
                 if(response){
                     vm.loading = false;
+                    if(vm.envio_ok){
+                        vm.$router.push({ name: 'dashboard' });
+                    }
                 }
             });
         }
